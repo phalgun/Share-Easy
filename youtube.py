@@ -3,16 +3,25 @@ import gdata.geo
 import gdata.youtube.service
 import gdata.media
 import re
+import globals
 
 '''
     Function uploads a video pointed by filename to YouTube
     It returns the Url of the uploaded video
 '''
-def post_to_youtube(filename,video_title,username,password) :
+def post_to_youtube(filename,video_title,username=None,password=None) :
     yt_service = gdata.youtube.service.YouTubeService()
     yt_service.ssl = True
-    yt_service.email = username
-    yt_service.password = password
+    if globals.youtube_username is None or globals.youtube_password is None:
+        # call UI .. set the username and password
+        # Store them in globals.youtube_*
+        # just in case, its taken as func arguments now
+        globals.youtube_username = username
+        globals.youtube_password = password
+    
+    yt_service.email = globals.youtube_username
+    yt_service.password = globals.youtube_password
+
     yt_service.source = 'youtube_uploader'
     yt_service.developer_key = 'AI39si77Hlo6DAm-EMKcGUDorti25HGabCONiR8NZoUBVeB3msV5l7hYvrwM_Q0xwICtRD-uXAw3pYhJQ50ow69LRRJkAkZpcQ'
     yt_service.client_id = 'youtube_uploader'
@@ -56,4 +65,4 @@ def post_to_youtube(filename,video_title,username,password) :
         raise "Error with uploading"
         return 0
         
-#print post_to_youtube('/home/pali/Downloads/test.mp4','OpenHackIndia')
+#print post_to_youtube('/home/pali/Downloads/test.mp4','OpenHackIndia', username='kartalkhan', password='kartalkhanAjja')

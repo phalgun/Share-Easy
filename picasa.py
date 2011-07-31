@@ -8,18 +8,27 @@ import gdata.photos.service
 import gdata.media
 import gdata.geo
 import re
+import globals
 
 '''
     Function takes in filename,title,username and password
     uploads the given photo to the account
     and returns the url of that photo
 '''
-def post_to_picasa(filename,photo_title,username,password):
+def post_to_picasa(filename,photo_title,username=None,password=None):
     
     gd_client = gdata.photos.service.PhotosService()
     #UI should be called and parameters passed!
-    gd_client.email = username #type your username here
-    gd_client.password = password # store your password in an environment variable called PASSWD
+    if globals.picasa_username is None or globals.picasa_password is None:
+        # call UI .. set the username and password
+        # Store them in globals.youtube_*
+        # just in case, its taken as func arguments now
+        globals.picasa_username = username
+        globals.picasa_password = password
+ 
+    
+    gd_client.email = globals.picasa_username #type your username here
+    gd_client.password = globals.picasa_password # store your password in an environment variable called PASSWD
     gd_client.source = 'python uploader'
     try:
         gd_client.ProgrammaticLogin()
