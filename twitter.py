@@ -19,8 +19,9 @@ def post_to_twitter(link):
     try :
         webbrowser.open(auth.get_authorization_url())
     except :
-        return 'Could not open browser'
-
+        raise 'Could not open browser'
+        return 0
+    
     # Ask user for verifier pin
     # Call UI here
     pin = raw_input('Enter the Verification pin number from twitter.com: ').strip()
@@ -29,7 +30,8 @@ def post_to_twitter(link):
     try :
         token = auth.get_access_token(verifier=pin)
     except :
-        return 'Authorization error'
+        raise 'Authorization error'
+        return 0
 
     twitter_oauth_key = token.key
     twitter_oauth_secret = token.secret
@@ -37,16 +39,17 @@ def post_to_twitter(link):
         auth = tweepy.OAuthHandler(twitter_consumer_key, twitter_consumer_secret)
         auth.set_access_token(twitter_oauth_key, twitter_oauth_secret)
     except : 
-        return 'Could not authorize user'
-    
+        raise 'Could not authorize user'
+        return 0
     twit_user = tweepy.API()
     
     try :
         api = tweepy.API(auth)
         api.update_status(link+" via ShareEasy #openhackindia")
     except :
-        return 'Error in connecting to the network'
+        raise 'Error in connecting to the network'
+        return 0
 
-    return 'success'
+    return 1
 
 #post_to_twitter(link = 'Twitter api - conquered!')

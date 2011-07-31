@@ -7,9 +7,9 @@ photo_url = None
 
 def func(progress, done):
     if done:
-        return 'success'
+        return 1
     else:
-        return 'Error in network connection'
+        raise 'Slow network connection,please wait'
 '''
     It takes a the filename and title of the photo
     uploads the photo onto flickr
@@ -20,24 +20,29 @@ def post_to_flickr(file,title):
     try :
         flickr = flickrapi.FlickrAPI(flickr_consumer_key, flickr_consumer_secret)
     except :
-        return 'Error in app consumer key'
+        raise 'Error in app consumer key'
+        return 0
     try :
         (token, frob) = flickr.get_token_part_one(perms='write')
     except :
-        return 'Error in authenticating user'
+        raise 'Error in authenticating user'
+        return 0
     
+    #UI comes into picture here
     if not token: raw_input("Press ENTER after you authorized this program")
     try :
         flickr.get_token_part_two((token, frob))
         flickr_token = token
     except :
-        return 'Error in authorizing'
+        raise 'Error in authorizing'
+        return 0
     try :
         resp = flickr.upload(filename=file, callback=func, title=title)
         photoid = resp.find('photoid').text
         photourl = shorturl.url(photoid)
         return photourl
     except :
-        return 'Error uploading'
+        raise 'Error uploading'
+        return 0
 
 #post_to_flickr('/home/pali/Downloads/flickr-yahoo-logo.png.jpg', 'flickr')
